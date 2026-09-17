@@ -1,0 +1,615 @@
+<title>윤샘의 LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fafbf4;
+    --ink:#191a23;
+    --ink-soft:#4b4d5a;
+    --lime:#b9ff66;
+    --white:#ffffff;
+    --line:#e3e4d9;
+    --muted:#8a8c94;
+    --warn-bg:#fff2c9;
+    --warn-ink:#7a5c00;
+    --focus:#191a23;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --cream:#121319;
+      --ink:#f4f5ee;
+      --ink-soft:#c7c9d6;
+      --lime:#b9ff66;
+      --white:#1d1f29;
+      --line:#33353f;
+      --muted:#9698a3;
+      --warn-bg:#3a2f0c;
+      --warn-ink:#f0c94a;
+      --focus:#b9ff66;
+    }
+  }
+  :root[data-theme="dark"]{
+    --cream:#121319;
+    --ink:#f4f5ee;
+    --ink-soft:#c7c9d6;
+    --lime:#b9ff66;
+    --white:#1d1f29;
+    --line:#33353f;
+    --muted:#9698a3;
+    --warn-bg:#3a2f0c;
+    --warn-ink:#f0c94a;
+    --focus:#b9ff66;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    padding-inline:24px; line-height:1.55;
+  }
+  h1,h2,h3{ margin:0; font-weight:600; text-wrap:balance; letter-spacing:-0.01em; }
+  a{ color:inherit; }
+  :focus-visible{ outline:2.5px solid var(--focus); outline-offset:2px; border-radius:3px; }
+  .wrap{ max-width:1120px; margin-inline:auto; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:6px; background:var(--lime); color:var(--ink);
+    font-size:.78rem; font-weight:600; padding:5px 14px; border-radius:99px;
+  }
+
+  /* nav */
+  nav{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding-block:26px; flex-wrap:wrap; border-bottom:1px solid var(--line);
+  }
+  .brand{ display:flex; align-items:center; gap:9px; font-weight:700; font-size:1.15rem; }
+  .brand .mark{ width:26px; height:26px; background:var(--ink); border-radius:7px; position:relative; flex:none; }
+  .brand .mark::before, .brand .mark::after{ content:""; position:absolute; background:var(--lime); border-radius:1px; }
+  .brand .mark::before{ width:12px; height:2.4px; top:11.8px; left:7px; transform:rotate(45deg); }
+  .brand .mark::after{ width:12px; height:2.4px; top:11.8px; left:7px; transform:rotate(-45deg); }
+  .nav-links{ display:flex; gap:26px; font-size:.92rem; color:var(--ink-soft); font-weight:500; }
+  .nav-links a{ text-decoration:none; }
+  .nav-links a:hover{ color:var(--ink); }
+  @media (max-width:760px){ .nav-links{ display:none; } }
+  .btn{
+    font-family:inherit; font-weight:600; font-size:.9rem; padding:12px 22px; border-radius:99px;
+    border:1.5px solid var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn.dark{ background:var(--ink); color:var(--cream); }
+  .btn.dark:hover{ background:var(--lime); color:var(--ink); border-color:var(--ink); }
+  .btn.ghost{ background:transparent; color:var(--ink); }
+  .btn.ghost:hover{ background:var(--ink); color:var(--cream); }
+
+  /* hero */
+  .hero{ display:grid; grid-template-columns:1fr .95fr; gap:40px; align-items:center; padding-block:56px 40px; }
+  @media (max-width:800px){ .hero{ grid-template-columns:1fr; } }
+  .hero h1{ font-size:clamp(2rem,4.4vw,3rem); margin-top:18px; }
+  .hero h1 .hl{ background:var(--lime); padding:0 8px; border-radius:8px; display:inline-block; }
+  .hero .subtitle{ margin:16px 0 0; font-size:1.05rem; font-weight:600; color:var(--ink-soft); }
+  .hero p{ margin:14px 0 0; max-width:46ch; color:var(--ink-soft); font-size:1.05rem; }
+  .hero .actions{ margin-top:28px; display:flex; gap:14px; flex-wrap:wrap; }
+  .hero-art{ width:100%; height:auto; }
+
+  .logo-strip{
+    display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap;
+    padding-block:26px 40px; border-bottom:1px solid var(--line);
+  }
+  .logo-strip span{ font-size:.82rem; font-weight:600; letter-spacing:.06em; color:var(--muted); }
+
+  /* view controls */
+  .view-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding-block:34px 0;
+  }
+  .tabs{ display:flex; gap:10px; flex-wrap:wrap; }
+  .tab-btn{
+    font-family:inherit; font-weight:600; font-size:.86rem; padding:9px 18px; border-radius:99px;
+    border:1.5px solid var(--ink); background:transparent; color:var(--ink); cursor:pointer;
+  }
+  .tab-btn.active{ background:var(--ink); color:var(--cream); }
+  .btn.small{ padding:9px 16px; font-size:.84rem; }
+
+  /* list view */
+  .list{ display:flex; flex-direction:column; border-top:1.5px solid var(--ink); }
+  .list-row{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:16px 4px; border-bottom:1px solid var(--line); text-decoration:none; color:var(--ink);
+  }
+  .list-row:hover{ background:var(--white); }
+  .list-row .lr-main{ display:flex; align-items:center; gap:14px; min-width:0; }
+  .list-row .lr-cat{
+    flex:none; font-size:.72rem; font-weight:600; padding:4px 10px; border-radius:99px;
+    background:var(--lime); color:var(--ink);
+  }
+  .list-row .lr-text{ min-width:0; }
+  .list-row h4{ margin:0; font-size:1rem; font-weight:600; }
+  .list-row p{ margin:2px 0 0; font-size:.85rem; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .list-row .lr-side{ display:flex; align-items:center; gap:8px; flex:none; }
+
+  /* groups / services */
+  .group{ padding-block:46px 6px; }
+  .group-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; margin-bottom:24px; }
+  .group-head h2{ font-size:clamp(1.5rem,3vw,2rem); margin-top:12px; }
+  .group-head p{ margin:10px 0 0; color:var(--ink-soft); font-size:.95rem; max-width:52ch; }
+
+  .grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; padding-block:0 20px; }
+  @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{
+    border-radius:26px; padding:30px; min-height:220px; display:flex; flex-direction:column;
+    justify-content:space-between; gap:20px; border:1.5px solid var(--ink);
+  }
+  .card.white{ background:var(--white); color:var(--ink); }
+  .card.lime{ background:var(--lime); color:var(--ink); border-color:var(--ink); }
+  .card.black{ background:var(--ink); color:var(--cream); border-color:var(--ink); }
+  .card .top-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .card h3{ font-size:1.24rem; line-height:1.3; }
+  .card p{ margin:0; font-size:.92rem; opacity:.85; }
+  .card .formula{ font-size:.76rem; font-weight:600; white-space:nowrap; opacity:.7; }
+  .card .bottom-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .icon-badge{ width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; }
+  .card.white .icon-badge, .card.lime .icon-badge{ background:var(--ink); color:var(--lime); }
+  .card.black .icon-badge{ background:var(--lime); color:var(--ink); }
+  .icon-badge svg{ width:20px; height:20px; }
+  .arrow-btn{
+    width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    border:1.5px solid currentColor; text-decoration:none; flex:none; transition:transform .15s ease, background .15s ease;
+  }
+  .card.white .arrow-btn, .card.lime .arrow-btn{ color:var(--ink); }
+  .card.black .arrow-btn{ color:var(--cream); }
+  .arrow-btn:hover{ background:var(--ink); color:var(--lime) !important; transform:rotate(45deg); }
+  .arrow-btn svg{ width:18px; height:18px; }
+  .badge-warn{ font-size:.7rem; font-weight:600; padding:4px 10px; border-radius:99px; background:var(--warn-bg); color:var(--warn-ink); }
+  .badge-mine{ font-size:.7rem; font-weight:600; padding:4px 10px; border-radius:99px; background:var(--line); color:var(--ink-soft); }
+  .card.black .badge-mine{ background:#2d2f3a; color:var(--muted); }
+  .card-tags{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .remove-btn{
+    width:24px; height:24px; border-radius:50%; border:1.5px solid currentColor; background:transparent;
+    color:inherit; cursor:pointer; font-size:.9rem; line-height:1; display:flex; align-items:center; justify-content:center; opacity:.7;
+  }
+  .remove-btn:hover{ opacity:1; }
+
+  .empty-card{
+    grid-column:1 / -1; border:1.5px dashed var(--line); border-radius:26px; padding:34px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    color:var(--muted); background:transparent; cursor:pointer; font:inherit; text-align:left;
+  }
+  .empty-card:hover{ border-color:var(--ink); color:var(--ink); }
+  .empty-card strong{ color:inherit; font-weight:600; }
+  .empty-card .plus-pill{
+    width:38px; height:38px; border-radius:50%; border:1.5px solid currentColor; display:flex;
+    align-items:center; justify-content:center; font-size:1.2rem; flex:none;
+  }
+
+  /* CTA banner */
+  .cta{
+    background:var(--ink); color:var(--cream); border-radius:32px; padding:52px 40px;
+    display:flex; justify-content:space-between; align-items:center; gap:30px; flex-wrap:wrap;
+    margin-block:34px 50px; position:relative; overflow:hidden;
+  }
+  .cta h2{ color:var(--cream); font-size:clamp(1.5rem,3.2vw,2.05rem); max-width:20ch; }
+  .cta .star{ position:absolute; color:var(--lime); opacity:.9; }
+  .cta .star.s1{ top:18px; right:120px; font-size:2rem; }
+  .cta .star.s2{ bottom:22px; right:60px; font-size:1.2rem; }
+
+  footer{
+    border-top:1px solid var(--line); padding-block:26px 40px;
+    display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    color:var(--muted); font-size:.85rem;
+  }
+
+  /* modal */
+  .backdrop{ position:fixed; inset:0; background:rgba(25,26,35,.55); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20; }
+  .backdrop[hidden]{ display:none; }
+  .modal{ background:var(--white); border:1.5px solid var(--ink); border-radius:22px; padding:30px; width:100%; max-width:420px; max-height:88vh; overflow:auto; }
+  .modal h2{ font-size:1.35rem; margin-bottom:6px; }
+  .modal .sub{ font-size:.85rem; color:var(--ink-soft); margin:0 0 18px; }
+  .field{ display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+  .field label{ font-size:.82rem; font-weight:600; }
+  .field input, .field textarea, .field select{
+    font:inherit; padding:10px 13px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--cream); color:var(--ink); resize:vertical;
+  }
+  .field textarea{ min-height:60px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+  .note{ font-size:.78rem; color:var(--muted); margin-top:10px; }
+</style>
+
+<div class="wrap">
+  <nav>
+    <div class="brand"><span class="mark" aria-hidden="true"></span>윤샘의 LAB</div>
+    <div class="nav-links">
+      <a href="#" data-tab="info2">정보</a>
+      <a href="#" data-tab="ai2">인공지능기초(2)</a>
+      <a href="#" data-tab="ai3">인공지능기초(3)</a>
+      <a href="#cta">자료 제안하기</a>
+    </div>
+    <button type="button" class="btn dark" id="nav-add-btn">자료 추가하기</button>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow">고등학생들과 함께</span>
+      <h1>손으로 만지고 머리로<br>생각하는 윤샘의 <span class="hl">LAB</span></h1>
+      <p class="subtitle">정보 · 파이썬 · 피지컬 · 데이터분석 · 인공지능을 이해하는 LAB</p>
+      <p>수업에서 쓴 인터랙티브 수업 자료 모음으로, 계속 추가됩니다.</p>
+      <div class="actions">
+        <a class="btn dark" href="#" data-tab="ai2">실습 둘러보기</a>
+        <button type="button" class="btn ghost" id="hero-add-btn">자료 추가하기</button>
+      </div>
+    </div>
+    <svg class="hero-art" viewBox="0 0 320 260" aria-hidden="true">
+      <circle cx="180" cy="130" r="92" fill="var(--lime)"/>
+      <g stroke="var(--ink)" stroke-width="2.2" fill="none">
+        <line x1="70" y1="55" x2="70" y2="215"/>
+        <line x1="70" y1="215" x2="250" y2="215"/>
+        <circle cx="95" cy="185" r="5" fill="var(--ink)"/>
+        <circle cx="120" cy="160" r="5" fill="var(--ink)"/>
+        <circle cx="140" cy="185" r="5" fill="var(--ink)"/>
+        <circle cx="165" cy="130" r="5" fill="var(--ink)"/>
+        <circle cx="195" cy="150" r="5" fill="var(--ink)"/>
+        <circle cx="215" cy="95" r="5" fill="var(--ink)"/>
+        <line x1="85" y1="198" x2="228" y2="80" stroke-linecap="round"/>
+      </g>
+      <path d="M40 60 l7 0 M43.5 56.5 l0 7" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="270" cy="60" r="6" fill="var(--ink)"/>
+      <path d="M250 210 l8 8 M258 210 l-8 8" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </section>
+
+  <div class="logo-strip">
+    <span>PYTHON</span><span>SCIKIT-LEARN</span><span>ORANGE3</span><span>D3.JS</span><span>MATPLOTLIB</span><span>JAVASCRIPT</span>
+  </div>
+
+  <div class="view-bar" id="view-bar">
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <button type="button" class="btn ghost small" id="view-toggle">전체 목록으로 보기</button>
+  </div>
+
+  <div id="groups"></div>
+
+  <section class="cta" id="cta">
+    <span class="star s1">✦</span>
+    <span class="star s2">✦</span>
+    <h2>새로 쓸만한 실습 자료가 있나요?</h2>
+    <button type="button" class="btn" style="background:var(--lime); border-color:var(--lime); color:var(--ink);" id="cta-add-btn">링크 보내고 추가하기 →</button>
+  </section>
+
+  <footer>
+    <span>학생들과 함께 쓰는 실습 도구를 모아둔 페이지입니다. 새 자료는 계속 추가됩니다.</span>
+    <span>github.com/wuwuwulie</span>
+  </footer>
+</div>
+
+<div class="backdrop" id="backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <h2 id="modal-title">새 자료 추가</h2>
+    <p class="sub">제목과 링크만 있으면 됩니다. 나머지는 선택 입력이에요.</p>
+    <form id="add-form">
+      <div class="field">
+        <label for="res-title">제목</label>
+        <input id="res-title" type="text" required placeholder="예: 의사결정나무 실습">
+      </div>
+      <div class="field">
+        <label for="res-url">링크</label>
+        <input id="res-url" type="url" required placeholder="https://... (PDF, 구글드라이브 링크도 가능)">
+      </div>
+      <div class="field">
+        <label for="res-group">카테고리</label>
+        <select id="res-group">
+          <option value="info2">고2 · 정보</option>
+          <option value="ai2">고2 · 인공지능 기초</option>
+          <option value="ai3">고3 · 인공지능 기초</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="res-desc">설명 (선택)</label>
+        <textarea id="res-desc" placeholder="한두 줄 설명"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="cancel-btn">취소</button>
+        <button type="submit" class="btn dark">추가하기</button>
+      </div>
+      <p class="note">이 브라우저에만 저장됩니다. 모두에게 보이게 하려면 코드 상단 목록에 직접 추가한 뒤 다시 배포하세요.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  // 새 항목은 해당 그룹 배열에 추가하면 모든 방문자에게 보입니다.
+  var groups = [
+    {
+      key:'info2', label:'고2 · 정보', heading:'정보 수업 자료',
+      desc:'개념 설명 PPT를 PDF로 정리해 올려둡니다.',
+      resources: [
+        {
+          title: '1단원 · 마이크로비트',
+          formula: 'PDF ×7',
+          desc: '버튼, 가속도 센서, 광센서, 라디오 통신, 서보모터, 다중버튼까지 마이크로비트 실습 자료 모음.',
+          url: 'https://drive.google.com/drive/folders/1bfNaRMdL9M362B9VqOT-8lvmjGAcY7AY',
+          icon: 'pdf'
+        },
+        {
+          title: '3단원 · 변수와 자료형',
+          formula: 'PDF ×13',
+          desc: '파이썬 소개, 프로그래밍 기초부터 변수와 자료형까지의 개념 설명과 학습지.',
+          url: 'https://drive.google.com/drive/folders/1lmRNXS8-Y8z-FSzuV4S6FEihHrT9QZ1g',
+          icon: 'pdf'
+        },
+        {
+          title: '3단원 · 선택 구조',
+          formula: 'PDF ×5',
+          desc: 'if, if-else, if-elif-else 조건문 개념과 실습 학습 자료.',
+          url: 'https://drive.google.com/drive/folders/17R8dP3GSAt3481NKm0ynd8ZmherR7N9f',
+          icon: 'pdf'
+        },
+        {
+          title: '3단원 · 반복 구조',
+          formula: 'PDF ×9',
+          desc: 'for문, while문, 중첩 제어구조까지 반복문 개념과 실습 학습 자료.',
+          url: 'https://drive.google.com/drive/folders/1vB_suhula-oPWjn2znm8Yge1myylBt4z',
+          icon: 'pdf'
+        }
+      ]
+    },
+    {
+      key:'ai2', label:'고2 · 인공지능 기초', heading:'인공지능 기초 실습 (2학년)',
+      desc:'데이터를 살펴보고, 회귀·분류를 직접 조작하며 체험하는 입문 실습입니다.',
+      resources: [
+        {
+          title: 'CLASSIFY LAB — AI는 어떤 기준으로 나눌까?',
+          formula: '특징 → 클래스',
+          desc: '관찰·예측·확인·설명 4단계로 지도학습의 분류 원리를 익힌다. 특징, 타깃, 클래스, 레이블, 분류 경계, 정확도 등 핵심 용어를 7개 활동으로 체험 (교과서 106~108쪽 연계).',
+          url: 'https://classify-learning-lab.vercel.app',
+          icon: 'classify'
+        },
+        {
+          title: '펭귄 관측소 — 데이터 탐험 활동',
+          formula: 'n = 344마리',
+          desc: '남극 팔머 기지에서 관측한 펭귄 344마리 데이터로 정성적·정량적 데이터를 구분하고, 산점도와 히스토그램으로 패턴을 찾아본다.',
+          url: 'https://first-penguin-data.vercel.app',
+          icon: 'data'
+        },
+        {
+          title: '선형 회귀 체험 실험실',
+          formula: 'y = ax + b',
+          desc: '슬라이더로 직선의 기울기와 절편을 직접 조절해 데이터에 가장 잘 맞는 회귀선을 찾는다. 수면 시간으로 시험 점수를 예측하는 예제 포함.',
+          url: 'https://visualization-linear-regression.vercel.app',
+          icon: 'regression'
+        },
+        {
+          title: 'KNN 분류기 시뮬레이터',
+          formula: 'k = 3, 5, 7…',
+          desc: '캔버스에 점을 찍으면 K-최근접 이웃 알고리즘이 실시간으로 분류한다. K값과 데이터 패턴을 바꿔가며 결정 경계 변화를 관찰.',
+          url: 'https://visualization-knn.vercel.app',
+          icon: 'knn'
+        },
+        {
+          title: '훈련 점수가 높으면 좋은 모델일까?',
+          formula: 'train ≠ test',
+          desc: '다항식 차수를 높여 선을 구부려보고, 훈련 오차와 한 번도 보지 못한 테스트 오차를 비교하며 과적합의 의미를 체감한다.',
+          url: 'https://overfitting-simulator.vercel.app',
+          icon: 'overfit'
+        }
+      ]
+    },
+    {
+      key:'ai3', label:'고3 · 인공지능 기초', heading:'인공지능 기초 실습 (3학년)',
+      desc:'비지도학습과 군집화를 실습합니다.',
+      resources: [
+        {
+          title: 'Orange3 군집화 실습',
+          formula: 'k = ?',
+          desc: '축구선수 포지션, K-pop 노래 장르 중 하나를 골라 같은 Orange3 워크플로로 비지도학습 군집화를 실습한다.',
+          url: 'https://kmeans-orange.vercel.app',
+          icon: 'cluster'
+        },
+        {
+          title: 'K-means 군집화 실습',
+          formula: 'k-means',
+          desc: 'K-means 알고리즘을 단계별로 실습하는 자료.',
+          url: 'https://kmeans-practice.vercel.app',
+          icon: 'cluster',
+          broken: true
+        }
+      ]
+    }
+  ];
+
+  var STORAGE_KEY = 'yoon-class-hub-custom-v3';
+  var palette = ['white','lime','black'];
+
+  var icons = {
+    regression: '<path d="M4 18 L8 12 L11 14 L16 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="12" r="1.4" fill="currentColor"/><circle cx="16" cy="6" r="1.4" fill="currentColor"/>',
+    knn: '<circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="9" r="1.3" fill="currentColor"/><circle cx="10" cy="13" r="1.3" fill="currentColor"/><circle cx="17" cy="16" r="1.4" fill="currentColor"/>',
+    overfit: '<path d="M3 16 C 6 8, 9 20, 12 10 S 17 18, 21 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
+    cluster: '<circle cx="7" cy="8" r="2" fill="currentColor"/><circle cx="10" cy="6" r="2" fill="currentColor"/><circle cx="6" cy="12" r="2" fill="currentColor"/><circle cx="17" cy="15" r="2" fill="currentColor"/><circle cx="20" cy="12" r="2" fill="currentColor"/>',
+    data: '<rect x="4" y="13" width="3.4" height="7" fill="currentColor"/><rect x="10.3" y="8" width="3.4" height="12" fill="currentColor"/><rect x="16.6" y="11" width="3.4" height="9" fill="currentColor"/>',
+    pdf: '<rect x="5" y="3" width="14" height="18" rx="1.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+    classify: '<path d="M3 20 L21 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="7" cy="8" r="1.6" fill="currentColor"/><circle cx="11" cy="6" r="1.6" fill="currentColor"/><circle cx="15" cy="17" r="1.6" fill="currentColor"/><circle cx="18" cy="14" r="1.6" fill="currentColor"/>'
+  };
+
+  function loadCustom(){
+    try{ var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; }
+    catch(e){ return []; }
+  }
+  function saveCustom(list){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }catch(e){} }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function cardHtml(item, removeId, colorClass){
+    var iconSvg = icons[item.icon] || icons.data;
+    var brokenBadge = item.broken ? '<span class="badge-warn">점검 중일 수 있어요</span>' : '';
+    var mineBadge = removeId != null ? '<span class="badge-mine">내가 추가함</span>' : '';
+    var removeBtn = removeId != null ? '<button class="remove-btn" data-remove="'+removeId+'" aria-label="삭제">×</button>' : '';
+    return (
+      '<article class="card '+colorClass+'">' +
+        '<div class="top-row">' +
+          '<h3>'+escapeHtml(item.title)+'</h3>' +
+          (item.formula ? '<span class="formula">'+escapeHtml(item.formula)+'</span>' : '') +
+        '</div>' +
+        '<p>'+escapeHtml(item.desc || '')+'</p>' +
+        '<div class="bottom-row">' +
+          '<div class="card-tags">' +
+            '<span class="icon-badge"><svg viewBox="0 0 24 24">'+iconSvg+'</svg></span>' +
+            brokenBadge + mineBadge + removeBtn +
+          '</div>' +
+          '<a class="arrow-btn" href="'+encodeURI(item.url)+'" target="_blank" rel="noopener" aria-label="바로 해보기">' +
+            '<svg viewBox="0 0 20 20" fill="none"><path d="M5 15 L15 5M8 5h7v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '</a>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function emptyCardHtml(groupKey){
+    return (
+      '<button type="button" class="empty-card" data-open-group="'+groupKey+'">' +
+        '<span><strong>아직 자료가 없어요.</strong><br>PDF·PPT나 링크가 준비되면 여기에 추가됩니다.</span>' +
+        '<span class="plus-pill">+</span>' +
+      '</button>'
+    );
+  }
+
+  function listRowHtml(entry){
+    var item = entry.item;
+    var iconSvg = icons[item.icon] || icons.data;
+    var brokenBadge = item.broken ? '<span class="badge-warn">점검 중일 수 있어요</span>' : '';
+    var mineBadge = entry.removeId != null ? '<span class="badge-mine">내가 추가함</span>' : '';
+    var removeBtn = entry.removeId != null ? '<button class="remove-btn" data-remove="'+entry.removeId+'" aria-label="삭제">×</button>' : '';
+    return (
+      '<div class="list-row">' +
+        '<a class="lr-main" href="'+encodeURI(item.url)+'" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;min-width:0;">' +
+          '<span class="lr-cat">'+escapeHtml(entry.groupLabel)+'</span>' +
+          '<span class="lr-text"><h4>'+escapeHtml(item.title)+'</h4><p>'+escapeHtml(item.desc || '')+'</p></span>' +
+        '</a>' +
+        '<span class="lr-side">' + brokenBadge + mineBadge + removeBtn +
+          '<span class="arrow-btn" style="width:34px;height:34px;"><svg viewBox="0 0 20 20" fill="none" style="width:15px;height:15px;"><path d="M5 15 L15 5M8 5h7v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+        '</span>' +
+      '</div>'
+    );
+  }
+
+  var state = { tab:'ai2', mode:'cards' };
+
+  function groupItems(g, custom){
+    var mine = custom.filter(function(c){ return c.group === g.key; });
+    return g.resources.map(function(it){ return {item:it, removeId:null, groupLabel:g.label}; })
+      .concat(mine.map(function(it){ return {item:it, removeId: custom.indexOf(it), groupLabel:g.label}; }));
+  }
+
+  function setTab(key){ state.tab = key; state.mode = 'cards'; render(); document.getElementById('view-bar').scrollIntoView({behavior:'smooth', block:'start'}); }
+
+  var tabsEl = document.getElementById('tabs');
+  var viewToggleBtn = document.getElementById('view-toggle');
+
+  function renderTabs(){
+    tabsEl.innerHTML = groups.map(function(g){
+      var active = (state.mode === 'cards' && state.tab === g.key) ? ' active' : '';
+      return '<button type="button" class="tab-btn'+active+'" data-tab="'+g.key+'">'+escapeHtml(g.label)+'</button>';
+    }).join('');
+    tabsEl.querySelectorAll('[data-tab]').forEach(function(btn){
+      btn.addEventListener('click', function(){ setTab(btn.getAttribute('data-tab')); });
+    });
+  }
+
+  function render(){
+    var custom = loadCustom();
+    renderTabs();
+    viewToggleBtn.textContent = state.mode === 'list' ? '과목별 카드로 보기' : '전체 목록으로 보기';
+    var wrap = document.getElementById('groups');
+    var html = '';
+
+    if(state.mode === 'list'){
+      var rows = [];
+      groups.forEach(function(g){ rows = rows.concat(groupItems(g, custom)); });
+      html += '<section class="group"><div class="list">';
+      html += rows.length ? rows.map(listRowHtml).join('') : '<p style="padding:20px 4px;color:var(--muted);">아직 자료가 없어요.</p>';
+      html += '</div></section>';
+    } else {
+      var g = groups.filter(function(x){ return x.key === state.tab; })[0] || groups[0];
+      var items = groupItems(g, custom);
+      html += '<section class="group" id="'+g.key+'-head">';
+      html += '<div class="group-head"><div><span class="eyebrow">'+escapeHtml(g.label)+'</span><h2>'+escapeHtml(g.heading)+'</h2><p>'+escapeHtml(g.desc)+'</p></div></div>';
+      html += '<div class="grid">';
+      if(items.length === 0){
+        html += emptyCardHtml(g.key);
+      } else {
+        html += items.map(function(entry, i){
+          return cardHtml(entry.item, entry.removeId, palette[i % 3]);
+        }).join('');
+      }
+      html += '</div></section>';
+    }
+
+    wrap.innerHTML = html;
+
+    wrap.querySelectorAll('[data-remove]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = parseInt(btn.getAttribute('data-remove'), 10);
+        var list = loadCustom();
+        list.splice(idx, 1);
+        saveCustom(list);
+        render();
+      });
+    });
+    wrap.querySelectorAll('[data-open-group]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        openModal(btn.getAttribute('data-open-group'));
+      });
+    });
+  }
+
+  viewToggleBtn.addEventListener('click', function(){
+    state.mode = state.mode === 'list' ? 'cards' : 'list';
+    render();
+  });
+
+  document.querySelectorAll('[data-tab]').forEach(function(el){
+    if(el.closest('#tabs')) return;
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      setTab(el.getAttribute('data-tab'));
+    });
+  });
+
+  var backdrop = document.getElementById('backdrop');
+  var form = document.getElementById('add-form');
+  var groupSelect = document.getElementById('res-group');
+
+  function openModal(presetGroup){
+    backdrop.hidden = false;
+    if(presetGroup) groupSelect.value = presetGroup;
+    document.getElementById('res-title').focus();
+  }
+  function closeModal(){ backdrop.hidden = true; form.reset(); }
+
+  ['nav-add-btn','hero-add-btn','cta-add-btn'].forEach(function(id){
+    document.getElementById(id).addEventListener('click', function(){ openModal(null); });
+  });
+  document.getElementById('cancel-btn').addEventListener('click', closeModal);
+  backdrop.addEventListener('click', function(e){ if(e.target === backdrop) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !backdrop.hidden) closeModal(); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var title = document.getElementById('res-title').value.trim();
+    var url = document.getElementById('res-url').value.trim();
+    var desc = document.getElementById('res-desc').value.trim();
+    var group = groupSelect.value;
+    if(!title || !url) return;
+    var list = loadCustom();
+    list.push({ title: title, url: url, desc: desc, group: group, icon: group === 'info2' ? 'pdf' : 'regression' });
+    saveCustom(list);
+    closeModal();
+    render();
+  });
+
+  render();
+})();
+</script>
